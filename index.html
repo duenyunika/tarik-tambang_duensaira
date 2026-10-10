@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tarik Tambang Cerdas!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="game">
+    <header>
+      <div class="logo">🌿</div>
+      <h1>Tarik Tambang Cerdas!</h1>
+      <p class="subtitle">Duen & Syaira</p>
+    </header>
+
+    <section id="menu" class="panel">
+      <h2>Siap Bertanding?</h2>
+      <p>Jawab soal dengan benar untuk menarik tali ke arahmu!</p>
+
+      <label for="pelajaran">Pilih pelajaran</label>
+      <select id="pelajaran">
+        <option value="matematika">Matematika</option>
+        <option value="pemrograman">Pemrograman</option>
+        <option value="campuran">Campuran</option>
+      </select>
+
+      <label for="level">Tingkat kesulitan</label>
+      <select id="level">
+        <option value="mudah">Mudah</option>
+        <option value="sedang">Sedang</option>
+        <option value="sulit">Sulit</option>
+      </select>
+
+      <button onclick="mulaiGame()">▶ Mulai Bermain</button>
+      <button class="secondary" onclick="caraBermain()">📖 Cara Bermain</button>
+      <p id="petunjuk" class="info"></p>
+    </section>
+
+    <section id="arena" class="panel hidden">
+      <div class="score">
+        <span>🤖 Bot: <b id="skorBot">0</b></span>
+        <span>Kamu: <b id="skorKamu">0</b> ⭐</span>
+      </div>
+
+      <div class="arena">
+        <div class="character bot">🤖<small>Bot</small></div>
+        <div class="rope-area">
+          <div id="rope" class="rope">
+            <span>🏳️</span>
+          </div>
+          <div class="ground"></div>
+        </div>
+        <div class="character player">🧑‍🎓<small>Kamu</small></div>
+      </div>
+
+      <p id="ronde" class="info">Ronde 1</p>
+      <h2 id="pertanyaan">Pertanyaan muncul di sini</h2>
+      <div id="pilihan" class="answers"></div>
+      <p id="feedback" class="info" aria-live="polite"></p>
+
+      <button id="lanjut" class="hidden" onclick="soalBerikutnya()">
+        Soal Berikutnya →
+      </button>
+      <button class="secondary" onclick="keMenu()">⌂ Menu Utama</button>
+    </section>
+
+    <section id="hasil" class="panel hidden">
+      <h2 id="judulHasil">Permainan Selesai!</h2>
+      <p id="pesanHasil"></p>
+      <button onclick="mulaiGame()">🔄 Main Lagi</button>
+      <button class="secondary" onclick="keMenu()">⌂ Menu Utama</button>
+    </section>
+
+    <footer>© 2026 Tarik Tambang Cerdas</footer>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
