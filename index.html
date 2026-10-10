@@ -1,80 +1,1038 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tarik Tambang Cerdas!</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Tarik Tambang Ilmu - Game Edukasi Lucu & Seru</title>
+    <!-- Favicon Logo -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23f59e0b' stroke='%23ffffff' stroke-width='4'/%3E%3Cpath d='M14 50 Q32 30 50 50 T86 50' stroke='%23451a03' stroke-width='14' fill='none' stroke-linecap='round'/%3E%3Cpath d='M14 50 Q32 30 50 50 T86 50' stroke='%23b45309' stroke-width='9' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='14' cy='50' r='11' fill='%23ef4444' stroke='%23ffffff' stroke-width='3'/%3E%3Ccircle cx='86' cy='50' r='11' fill='%233b82f6' stroke='%23ffffff' stroke-width='3'/%3E%3Ccircle cx='50' cy='50' r='7' fill='%23fbbf24' stroke='%2378350f' stroke-width='3'/%3E%3C/svg%3E">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #090d16;
+            color: #f8fafc;
+            user-select: none;
+            -webkit-user-select: none;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+
+        .font-game {
+            font-family: 'Fredoka', cursive, sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(15, 23, 42, 0.88);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+        }
+
+        /* Modern Tactile Buttons */
+        .btn-3d {
+            transition: all 0.12s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        .btn-3d:active {
+            transform: translateY(3px) scale(0.98);
+        }
+
+        .btn-amber {
+            background: linear-gradient(180deg, #fbbf24 0%, #d97706 100%);
+            box-shadow: 0 5px 0 #78350f, 0 8px 18px rgba(245, 158, 11, 0.35);
+            color: #1e1b4b;
+        }
+        .btn-amber:active {
+            box-shadow: 0 1px 0 #78350f;
+        }
+
+        .btn-blue {
+            background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+            box-shadow: 0 5px 0 #1e3a8a, 0 8px 18px rgba(59, 130, 246, 0.35);
+            color: #ffffff;
+        }
+        .btn-blue:active {
+            box-shadow: 0 1px 0 #1e3a8a;
+        }
+
+        .btn-emerald {
+            background: linear-gradient(180deg, #34d399 0%, #059669 100%);
+            box-shadow: 0 5px 0 #064e3b, 0 8px 18px rgba(16, 185, 129, 0.35);
+            color: #ffffff;
+        }
+        .btn-emerald:active {
+            box-shadow: 0 1px 0 #064e3b;
+        }
+
+        /* Non-square Floating Circular Shield Emblem */
+        .logo-emblem-circle {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fbbf24 0%, #d97706 70%, #78350f 100%);
+            border: 5px solid #ffffff;
+            box-shadow: 0 0 35px rgba(251, 191, 36, 0.6), inset 0 0 15px rgba(255, 255, 255, 0.5);
+            animation: pulseGlow 2.5s infinite ease-in-out;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { transform: scale(1) rotate(0deg); box-shadow: 0 0 25px rgba(251, 191, 36, 0.5); }
+            50% { transform: scale(1.05) rotate(2deg); box-shadow: 0 0 45px rgba(251, 191, 36, 0.8); }
+        }
+
+        .option-btn {
+            background: rgba(30, 41, 59, 0.85);
+            border: 2px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.15s ease;
+        }
+        .option-btn:hover {
+            border-color: #fbbf24;
+            background: rgba(51, 65, 85, 0.95);
+            transform: translateY(-2px);
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 1.5rem;
+        }
+
+        @keyframes scoreFloat {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.3); }
+        }
+        .animate-score-pop {
+            animation: scoreFloat 1s forwards ease-out;
+        }
+    </style>
 </head>
-<body>
-  <main class="game">
-    <header>
-      <div class="logo">🌿</div>
-      <h1>Tarik Tambang Cerdas!</h1>
-      <p class="subtitle">Duen & Syaira</p>
+<body class="min-h-screen flex flex-col justify-between items-center relative p-3 md:p-6 select-none bg-slate-950">
+
+    <!-- LOGO DEFINITION (dipakai ulang di beberapa tempat) -->
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+        <defs>
+            <symbol id="logoTarikTambang" viewBox="0 0 100 80">
+                <!-- Tali tarik tambang -->
+                <path d="M14 40 Q32 20 50 40 T86 40" stroke="#451a03" stroke-width="14" fill="none" stroke-linecap="round"/>
+                <path d="M14 40 Q32 20 50 40 T86 40" stroke="#b45309" stroke-width="9" fill="none" stroke-linecap="round"/>
+                <path d="M14 40 Q32 20 50 40 T86 40" stroke="#fde68a" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-dasharray="3 5"/>
+                <!-- Ujung tim merah & biru -->
+                <circle cx="14" cy="40" r="11" fill="#ef4444" stroke="#ffffff" stroke-width="3"/>
+                <circle cx="86" cy="40" r="11" fill="#3b82f6" stroke="#ffffff" stroke-width="3"/>
+                <!-- Penanda tengah tali -->
+                <circle cx="50" cy="40" r="8" fill="#fbbf24" stroke="#78350f" stroke-width="3"/>
+                <circle cx="50" cy="40" r="3.5" fill="#ef4444"/>
+            </symbol>
+        </defs>
+    </svg>
+
+    <!-- OPENING LOGO & LOADING SCREEN -->
+    <div id="loadingScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white p-6 transition-opacity duration-500">
+        <div class="max-w-md w-full flex flex-col items-center text-center space-y-5">
+            
+            <!-- Circular Non-Square Dynamic Emblem Logo -->
+            <div class="relative flex items-center justify-center">
+                <div class="logo-emblem-circle flex flex-col items-center justify-center relative">
+                    <svg viewBox="0 0 100 80" class="w-20 h-16 mb-1 drop-shadow-md" role="img" aria-label="Logo Tarik Tambang Ilmu">
+                        <use href="#logoTarikTambang"/>
+                    </svg>
+                    <span class="text-[10px] font-game font-black text-amber-950 uppercase tracking-widest bg-amber-200 px-2.5 py-0.5 rounded-full shadow">EDUSATU</span>
+                </div>
+            </div>
+            
+            <div>
+                <h1 class="text-3xl md:text-4xl font-game font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 tracking-wide drop-shadow-lg">
+                    TARIK TAMBANG ILMU
+                </h1>
+                <p class="text-xs text-slate-300 mt-1 font-medium">Kuis Berhitung & Ketangkasan Arena</p>
+            </div>
+
+            <!-- Creator Badge -->
+            <div class="bg-gradient-to-r from-amber-400 to-orange-400 text-slate-950 px-5 py-1.5 rounded-full shadow-lg flex items-center space-x-2 font-bold text-xs">
+                <span>Dibuat Oleh:</span>
+                <span class="font-game text-sm font-black uppercase tracking-wider">duen & saira</span>
+                <span>✨</span>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-slate-900 rounded-2xl h-6 p-1 border border-slate-700 relative flex items-center overflow-hidden">
+                <div id="loadingProgress" class="bg-gradient-to-r from-amber-400 via-orange-400 to-emerald-400 h-full rounded-xl w-0 transition-all duration-200 shadow"></div>
+                <span id="loadingPercentText" class="absolute inset-0 flex items-center justify-center text-xs font-game font-bold text-white drop-shadow">0%</span>
+            </div>
+            <p id="loadingText" class="text-xs text-slate-400 font-game">Menyiapkan Arena & Tim Atlet...</p>
+        </div>
+    </div>
+
+    <!-- HEADER BAR -->
+    <header class="w-full max-w-5xl flex justify-between items-center z-10 mb-3">
+        <div class="flex items-center space-x-3 cursor-pointer" onclick="window.confirmExitGame()">
+            <!-- Circular Logo Badge in Header -->
+            <div class="w-11 h-11 bg-gradient-to-tr from-amber-500 to-amber-300 rounded-full flex items-center justify-center shadow-lg border-2 border-white hover:scale-105 transition">
+                <svg viewBox="0 0 100 80" class="w-8 h-6" role="img" aria-label="Logo Tarik Tambang Ilmu">
+                    <use href="#logoTarikTambang"/>
+                </svg>
+            </div>
+            <div>
+                <h2 class="font-game text-xl md:text-2xl font-black text-amber-400 leading-none drop-shadow">TARIK TAMBANG ILMU</h2>
+                <p class="text-[11px] text-slate-300 font-medium">Karya <span class="text-amber-300 font-bold">duen & saira</span></p>
+            </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+            <button onclick="window.replayLoadingScreen()" class="w-10 h-10 glass-card hover:bg-slate-800 rounded-2xl flex items-center justify-center text-amber-300 transition btn-3d" title="Putar Ulang Loading">
+                <i class="fas fa-redo-alt text-sm"></i>
+            </button>
+            <button id="soundToggleBtn" onclick="window.toggleAudio()" class="w-10 h-10 glass-card hover:bg-slate-800 rounded-2xl flex items-center justify-center text-amber-300 transition btn-3d" title="Suara Game">
+                <i class="fas fa-volume-up text-base" id="soundIcon"></i>
+            </button>
+            <button onclick="window.openModal('modalAbout')" class="px-3.5 py-2 glass-card hover:bg-slate-800 rounded-2xl flex items-center space-x-2 text-xs text-white font-bold transition btn-3d">
+                <i class="fas fa-heart text-red-400"></i>
+                <span class="hidden sm:inline">Tentang Kami</span>
+            </button>
+        </div>
     </header>
 
-    <section id="menu" class="panel">
-      <h2>Siap Bertanding?</h2>
-      <p>Jawab soal dengan benar untuk menarik tali ke arahmu!</p>
+    <!-- MAIN MENU CONTAINER -->
+    <main class="w-full max-w-5xl flex-1 flex flex-col items-center justify-center z-10">
+        
+        <!-- MAIN MENU PANEL -->
+        <div id="mainMenu" class="w-full max-w-xl glass-card rounded-3xl p-6 md:p-8 shadow-2xl text-center space-y-6">
+            
+            <!-- Category Subject Selection -->
+            <div>
+                <h3 class="text-xs font-game font-bold tracking-wider text-amber-300 mb-3 uppercase">PILIH KATEGORI SOAL:</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="btnCatMath" onclick="window.selectCategory('math')" class="py-3 px-4 rounded-2xl border-2 border-amber-400 bg-amber-400/20 text-amber-300 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition">
+                        <span class="text-2xl">🧮</span>
+                        <span>Matematika Dasar</span>
+                    </button>
+                    <button id="btnCatCode" onclick="window.selectCategory('code')" class="py-3 px-4 rounded-2xl border-2 border-slate-700 bg-slate-800/50 text-slate-400 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition">
+                        <span class="text-2xl">💻</span>
+                        <span>Pemrograman</span>
+                    </button>
+                </div>
+            </div>
 
-      <label for="pelajaran">Pilih pelajaran</label>
-      <select id="pelajaran">
-        <option value="matematika">Matematika</option>
-        <option value="pemrograman">Pemrograman</option>
-        <option value="campuran">Campuran</option>
-      </select>
+            <!-- Game Mode Buttons -->
+            <div class="space-y-3 pt-1">
+                <h3 class="text-xs font-game font-bold tracking-wider text-amber-300 mb-2 uppercase">PILIH MODE PERMAINAN:</h3>
+                
+                <!-- Vs Bot -->
+                <button onclick="window.startSinglePlayer()" class="w-full p-3.5 md:p-4 rounded-2xl btn-amber flex items-center justify-between font-game font-black text-base md:text-lg btn-3d">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl md:text-3xl bg-amber-950/20 p-2 rounded-2xl">🤖</span>
+                        <div class="text-left">
+                            <div class="leading-tight">VS BOT COMP</div>
+                            <div class="text-[11px] font-sans font-medium text-amber-950/80">Latihan santai lawan Komputer</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-play text-sm"></i>
+                </button>
 
-      <label for="level">Tingkat kesulitan</label>
-      <select id="level">
-        <option value="mudah">Mudah</option>
-        <option value="sedang">Sedang</option>
-        <option value="sulit">Sulit</option>
-      </select>
+                <!-- Local 2 Player -->
+                <button onclick="window.startLocal2P()" class="w-full p-3.5 md:p-4 rounded-2xl btn-blue flex items-center justify-between font-game font-black text-base md:text-lg btn-3d">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl md:text-3xl bg-blue-950/30 p-2 rounded-2xl">👥</span>
+                        <div class="text-left">
+                            <div class="leading-tight">MABAR 1 HP (2 PLAYER)</div>
+                            <div class="text-[11px] font-sans font-medium text-blue-100/80">Main berdua dalam 1 layar bergantian</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-play text-sm"></i>
+                </button>
 
-      <button onclick="mulaiGame()">▶ Mulai Bermain</button>
-      <button class="secondary" onclick="caraBermain()">📖 Cara Bermain</button>
-      <p id="petunjuk" class="info"></p>
-    </section>
-
-    <section id="arena" class="panel hidden">
-      <div class="score">
-        <span>🤖 Bot: <b id="skorBot">0</b></span>
-        <span>Kamu: <b id="skorKamu">0</b> ⭐</span>
-      </div>
-
-      <div class="arena">
-        <div class="character bot">🤖<small>Bot</small></div>
-        <div class="rope-area">
-          <div id="rope" class="rope">
-            <span>🏳️</span>
-          </div>
-          <div class="ground"></div>
+                <!-- Online Multiplayer -->
+                <button onclick="window.showOnlineLobby()" class="w-full p-3.5 md:p-4 rounded-2xl btn-emerald flex items-center justify-between font-game font-black text-base md:text-lg btn-3d">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-2xl md:text-3xl bg-emerald-950/30 p-2 rounded-2xl">🌐</span>
+                        <div class="text-left">
+                            <div class="leading-tight">MABAR ONLINE (KODE ROOM)</div>
+                            <div class="text-[11px] font-sans font-medium text-emerald-100/80">Tanding antar HP pakai kode rahasia</div>
+                        </div>
+                    </div>
+                    <i class="fas fa-wifi text-sm"></i>
+                </button>
+            </div>
         </div>
-        <div class="character player">🧑‍🎓<small>Kamu</small></div>
-      </div>
 
-      <p id="ronde" class="info">Ronde 1</p>
-      <h2 id="pertanyaan">Pertanyaan muncul di sini</h2>
-      <div id="pilihan" class="answers"></div>
-      <p id="feedback" class="info" aria-live="polite"></p>
+        <!-- ONLINE LOBBY PANEL -->
+        <div id="onlineLobby" class="w-full max-w-md glass-card rounded-3xl p-6 shadow-2xl text-center space-y-6 hidden">
+            <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
+                <button onclick="window.backToMainMenu()" class="text-slate-400 hover:text-white"><i class="fas fa-chevron-left text-lg"></i></button>
+                <h3 class="font-game text-xl font-bold text-amber-300">MABAR ONLINE</h3>
+                <div class="w-5"></div>
+            </div>
 
-      <button id="lanjut" class="hidden" onclick="soalBerikutnya()">
-        Soal Berikutnya →
-      </button>
-      <button class="secondary" onclick="keMenu()">⌂ Menu Utama</button>
-    </section>
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+                <h4 class="text-xs font-bold text-slate-300 uppercase">BUAT RUANGAN BARU</h4>
+                <button onclick="window.createOnlineRoom()" class="w-full py-3 btn-amber font-game font-bold rounded-xl btn-3d">
+                    <i class="fas fa-plus-circle mr-2"></i> Buat Room & Dapatkan Kode
+                </button>
+            </div>
 
-    <section id="hasil" class="panel hidden">
-      <h2 id="judulHasil">Permainan Selesai!</h2>
-      <p id="pesanHasil"></p>
-      <button onclick="mulaiGame()">🔄 Main Lagi</button>
-      <button class="secondary" onclick="keMenu()">⌂ Menu Utama</button>
-    </section>
+            <div class="text-slate-500 font-bold text-xs uppercase">— ATAU —</div>
 
-    <footer>© 2026 Tarik Tambang Cerdas</footer>
-  </main>
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+                <h4 class="text-xs font-bold text-slate-300 uppercase">MASUK KODE ROOM TEMAN</h4>
+                <div class="flex space-x-2">
+                    <input id="inputRoomCode" type="text" maxlength="4" placeholder="4 ANGKA" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-center font-mono font-bold text-amber-300 uppercase focus:outline-none focus:border-amber-400">
+                    <button onclick="window.joinOnlineRoom()" class="px-5 btn-blue font-game font-bold rounded-xl btn-3d">
+                        GABUNG
+                    </button>
+                </div>
+            </div>
+        </div>
 
-  <script src="script.js"></script>
+        <!-- GAMEPLAY SCREEN -->
+        <div id="gameplayScreen" class="w-full max-w-4xl space-y-4 hidden">
+            
+            <!-- Top HUD Bar -->
+            <div class="glass-card rounded-2xl p-3.5 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 border border-slate-700">
+                <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-3.5 h-3.5 rounded-full bg-red-500 border-2 border-white"></div>
+                        <span id="labelTeam1" class="font-game font-bold text-red-400 text-sm md:text-base">TIM MERAH (3)</span>
+                    </div>
+                    <span id="scoreTeam1" class="font-mono font-bold bg-red-950/80 text-red-300 border border-red-500/30 px-3 py-1 rounded-xl text-xs md:text-sm">0m</span>
+                </div>
+
+                <!-- Central Tug Meter -->
+                <div class="w-full md:flex-1 max-w-md bg-slate-950 h-5 md:h-6 rounded-full p-1 border border-slate-700 relative flex items-center overflow-hidden">
+                    <div class="absolute left-1/2 top-0 bottom-0 w-1 bg-amber-400 z-10"></div>
+                    <div id="pullProgress" class="h-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500 rounded-full transition-all duration-300 w-1/2"></div>
+                </div>
+
+                <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-end">
+                    <span id="scoreTeam2" class="font-mono font-bold bg-blue-950/80 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-xl text-xs md:text-sm">0m</span>
+                    <div class="flex items-center space-x-2">
+                        <span id="labelTeam2" class="font-game font-bold text-blue-400 text-sm md:text-base">TIM BIRU (3)</span>
+                        <div class="w-3.5 h-3.5 rounded-full bg-blue-500 border-2 border-white"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CANVAS ARENA VIEWPORT -->
+            <div class="relative w-full aspect-[21/9] min-h-[280px] bg-sky-950 rounded-3xl border-4 border-amber-400 overflow-hidden shadow-2xl">
+                <canvas id="gameCanvas"></canvas>
+
+                <!-- Floating Popup Container -->
+                <div id="popupsContainer" class="absolute inset-0 pointer-events-none flex items-center justify-center"></div>
+                
+                <div class="absolute top-3 left-3 bg-slate-950/85 border border-amber-400/40 px-3 py-1 rounded-xl text-xs font-game font-bold text-amber-300 flex items-center space-x-1 shadow-lg pointer-events-none">
+                    <span id="badgeSubjectIcon">🧮</span>
+                    <span id="badgeSubjectName">MATEMATIKA</span>
+                </div>
+
+                <div id="hudRoomCode" class="absolute top-3 right-3 bg-slate-950/85 border border-emerald-400/40 px-3 py-1 rounded-xl text-xs font-mono font-bold text-emerald-400 shadow-lg hidden pointer-events-none">
+                    ROOM: <span id="textRoomCodeDisplay">----</span>
+                </div>
+            </div>
+
+            <!-- QUIZ QUESTION PANEL -->
+            <div class="glass-card rounded-3xl p-5 md:p-6 space-y-4 border border-slate-700 shadow-xl">
+                <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
+                    <span id="turnIndicatorBadge" class="px-4 py-1 bg-amber-400 text-amber-950 font-game font-black text-xs rounded-xl uppercase">GILIRAN: TIM MERAH</span>
+
+                    <button onclick="window.refreshCurrentQuestion()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-game font-bold border border-slate-600 transition flex items-center space-x-1.5 btn-3d">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Ganti Soal</span>
+                    </button>
+                </div>
+
+                <!-- Timer Menjawab -->
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-hourglass-half text-amber-300"></i>
+                    <div class="flex-1 h-3 bg-slate-950 rounded-full border border-slate-700 overflow-hidden">
+                        <div id="timerBar" class="h-full rounded-full bg-emerald-400" style="width:100%; transition: width 0.12s linear;"></div>
+                    </div>
+                    <span id="timerText" class="font-mono font-bold text-amber-300 text-sm w-8 text-right">10</span>
+                </div>
+
+                <div class="bg-slate-950/90 p-4 rounded-2xl border border-slate-800 text-center min-h-[75px] flex items-center justify-center shadow-inner">
+                    <p id="questionText" class="font-game text-xl md:text-2xl font-bold text-amber-200 leading-snug">
+                        Memuat pertanyaan...
+                    </p>
+                </div>
+
+                <div id="optionsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL ABOUT US -->
+    <div id="modalAbout" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-md glass-card rounded-3xl p-6 space-y-5 border border-amber-400/40 shadow-2xl relative">
+            <button onclick="window.closeModal('modalAbout')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
+            
+            <div class="text-center space-y-2">
+                <div class="text-5xl">🪢</div>
+                <h3 class="font-game text-2xl font-black text-amber-300">TENTANG KAMI</h3>
+                <p class="text-xs text-slate-300">Game Edukasi Tarik Tambang Interaktif</p>
+            </div>
+
+            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-800 text-xs text-slate-300 leading-relaxed space-y-2">
+                <p><strong class="text-amber-300">Tarik Tambang Ilmu</strong> dikembangkan secara khusus oleh duo kreatif <strong class="text-amber-400">duen & saira</strong> untuk menyajikan kuis ketangkasan berhitung cepat dalam balutan animasi kartun 2D yang seru dan adu strategi.</p>
+                <p>Fitur Utama: Arena Animasi Kartun 2D Vektor, Tim 3v3 Atlet, Mode Vs Computer, Mabar 1 HP, & Mabar Online Realtime.</p>
+            </div>
+
+            <button onclick="window.closeModal('modalAbout')" class="w-full py-3 btn-amber font-game font-bold rounded-xl btn-3d">
+                Tutup & Kembali
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL CONFIRM EXIT -->
+    <div id="modalConfirmExit" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-sm glass-card rounded-3xl p-6 text-center space-y-4 border border-slate-700 shadow-2xl">
+            <div class="text-4xl text-amber-300">⚠️</div>
+            <h3 class="font-game text-xl font-bold text-white">Keluar dari Permainan?</h3>
+            <p class="text-xs text-slate-300">Pertandingan yang sedang berlangsung akan dihentikan.</p>
+            <div class="grid grid-cols-2 gap-3 pt-2">
+                <button onclick="window.closeModal('modalConfirmExit')" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl text-xs">
+                    Lanjut Main
+                </button>
+                <button onclick="window.executeExitToMenu()" class="py-2.5 bg-red-600 hover:bg-red-500 text-white font-bold rounded-xl text-xs">
+                    Ya, Keluar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VICTORY -->
+    <div id="modalWin" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
+        <div class="w-full max-w-sm glass-card rounded-3xl p-6 text-center space-y-5 border border-amber-400 shadow-2xl">
+            <div class="text-6xl animate-bounce">🏆</div>
+            <h3 id="winTitleText" class="font-game text-2xl font-black text-amber-300">TIM MERAH MENANG!</h3>
+            <p id="winSubText" class="text-xs text-slate-300">Selamat! Kamu berhasil menguasai arena!</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="window.playAgain()" class="py-3 btn-amber font-game font-bold rounded-xl btn-3d">
+                    <i class="fas fa-redo mr-1"></i> Main Lagi
+                </button>
+                <button onclick="window.closeModal('modalWin'); window.backToMainMenu();" class="py-3 btn-blue font-game font-bold rounded-xl btn-3d">
+                    <i class="fas fa-home mr-1"></i> Menu Utama
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase dimuat di belakang layar agar loading & game tidak tertahan koneksi lambat
+        let initializeApp, getAuth, signInAnonymously, getFirestore, doc, setDoc, getDoc;
+
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tarik-tambang-app-2d-v2';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
+            apiKey: "demo-key",
+            authDomain: "demo.firebaseapp.com",
+            projectId: "demo-project",
+            storageBucket: "demo.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "1:123456789:web:abcdef"
+        };
+
+        let auth = null;
+        let db = null;
+        (async () => {
+            try {
+                ({ initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"));
+                ({ getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"));
+                ({ getFirestore, doc, setDoc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"));
+                const app = initializeApp(firebaseConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+            } catch (err) {
+                console.warn("Firebase gagal dimuat (mode online tidak tersedia):", err);
+            }
+        })();
+
+        // Audio Synthesizer
+        let audioCtx = null;
+        let isMuted = false;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (isMuted) return;
+            initAudio();
+            if (!audioCtx) return;
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'whistle') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(2200, now);
+                osc.frequency.linearRampToValueAtTime(2600, now + 0.1);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'correct') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.exponentialRampToValueAtTime(880, now + 0.2);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, now);
+                osc.frequency.setValueAtTime(140, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now);
+                osc.stop(now + 0.25);
+            } else if (type === 'pull') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(180, now);
+                osc.frequency.linearRampToValueAtTime(320, now + 0.15);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            } else if (type === 'win') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(554.37, now + 0.1);
+                osc.frequency.setValueAtTime(659.25, now + 0.2);
+                osc.frequency.setValueAtTime(880, now + 0.3);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        }
+
+        window.toggleAudio = function() {
+            isMuted = !isMuted;
+            const icon = document.getElementById('soundIcon');
+            if (icon) {
+                icon.className = isMuted ? 'fas fa-volume-mute text-red-400' : 'fas fa-volume-up text-amber-300';
+            }
+        };
+
+        const questionBanks = {
+            math: [
+                { q: "Berapakah hasil dari 12 + 15?", options: ["25", "27", "29", "32"], ans: 1 },
+                { q: "Berapakah hasil dari 45 - 18?", options: ["23", "25", "27", "29"], ans: 2 },
+                { q: "Berapakah hasil dari 7 x 8?", options: ["48", "54", "56", "64"], ans: 2 },
+                { q: "Berapakah hasil dari 72 : 9?", options: ["6", "7", "8", "9"], ans: 2 },
+                { q: "Berapakah hasil dari 14 + 28 - 10?", options: ["30", "32", "34", "36"], ans: 1 },
+                { q: "Berapakah hasil dari 9 x 6?", options: ["45", "54", "63", "52"], ans: 1 },
+                { q: "Berapakah nilai dari 100 - 37?", options: ["63", "67", "73", "53"], ans: 0 },
+                { q: "Berapakah hasil dari 15 x 4?", options: ["50", "60", "70", "80"], ans: 1 },
+                { q: "Berapakah hasil dari 81 : 9?", options: ["7", "8", "9", "10"], ans: 2 },
+                { q: "Berapakah hasil dari 25 + 35?", options: ["50", "60", "65", "70"], ans: 1 }
+            ],
+            code: [
+                { q: "Tag HTML mana yang digunakan untuk judul paling besar?", options: ["<head>", "<h6>", "<h1>", "<title>"], ans: 2 },
+                { q: "Properti CSS apa untuk mengubah warna teks?", options: ["font-color", "color", "text-color", "background"], ans: 1 },
+                { q: "Simbol komentar 1 baris di JavaScript adalah?", options: ["//", "/*", "<!--", "#"], ans: 0 },
+                { q: "Perintah mencetak pesan di Console browser adalah?", options: ["print()", "console.log()", "document.write()", "alert()"], ans: 1 },
+                { q: "Tipe data JavaScript yang berisi true / false adalah?", options: ["String", "Number", "Boolean", "Object"], ans: 2 },
+                { q: "Atribut HTML untuk link / tautan adalah?", options: ["src", "href", "link", "target"], ans: 1 },
+                { q: "Cara membuat variabel di JavaScript modern?", options: ["var & let", "let & const", "make & set", "define"], ans: 1 },
+                { q: "Ekstensi standar file halaman web adalah?", options: [".css", ".js", ".html", ".php"], ans: 2 }
+            ]
+        };
+
+        let currentCategory = 'math';
+        let gameMode = 'vsBot';
+        let targetRopeOffset = 0;
+        let currentRopeOffset = 0;
+        let activeTurn = 1;
+        let currentQuestion = null;
+
+        const mainMenu = document.getElementById('mainMenu');
+        const onlineLobby = document.getElementById('onlineLobby');
+        const gameplayScreen = document.getElementById('gameplayScreen');
+
+        let canvas, ctx;
+        let isCanvasInit = false;
+
+        function init2DArena() {
+            canvas = document.getElementById('gameCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            
+            function resizeCanvas() {
+                canvas.width = canvas.parentElement.clientWidth;
+                canvas.height = canvas.parentElement.clientHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            if (!isCanvasInit) {
+                isCanvasInit = true;
+                requestAnimationFrame(renderLoop);
+            }
+        }
+
+        function renderLoop() {
+            if (!ctx || !canvas) return;
+            requestAnimationFrame(renderLoop);
+
+            // Interpolate Rope Movement
+            currentRopeOffset += (targetRopeOffset - currentRopeOffset) * 0.08;
+            const offsetX = currentRopeOffset * (canvas.width * 0.003);
+
+            const W = canvas.width;
+            const H = canvas.height;
+
+            // 1. Sky & Sunburst Background
+            const skyGrad = ctx.createLinearGradient(0, 0, 0, H * 0.65);
+            skyGrad.addColorStop(0, '#38bdf8');
+            skyGrad.addColorStop(1, '#bae6fd');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, W, H);
+
+            // 2. Crowd Spectators Stadium Fence
+            ctx.fillStyle = '#0284c7';
+            ctx.fillRect(0, H * 0.42, W, H * 0.15);
+
+            // Animated Crowd Dots
+            for (let i = 0; i < W; i += 18) {
+                const bounce = Math.sin((Date.now() * 0.005) + i) * 3;
+                ctx.fillStyle = (i % 36 === 0) ? '#f43f5e' : (i % 54 === 0) ? '#fbbf24' : '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(i + 10, H * 0.46 + bounce, 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // 3. Green Grass Field
+            const grassGrad = ctx.createLinearGradient(0, H * 0.55, 0, H);
+            grassGrad.addColorStop(0, '#22c55e');
+            grassGrad.addColorStop(1, '#15803d');
+            ctx.fillStyle = grassGrad;
+            ctx.fillRect(0, H * 0.55, W, H * 0.45);
+
+            // Pitch Lines
+            ctx.fillStyle = '#fde047';
+            ctx.fillRect(W / 2 - 4, H * 0.55, 8, H * 0.45);
+
+            // Wasit / Referee in the middle
+            const refX = W / 2 + offsetX * 0.2;
+            const refY = H * 0.52;
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(refX - 8, refY - 18, 16, 22); // Shirt
+            ctx.fillStyle = '#ffedd5';
+            ctx.beginPath(); ctx.arc(refX, refY - 26, 9, 0, Math.PI * 2); ctx.fill(); // Head
+            ctx.fillStyle = '#ef4444'; ctx.fillRect(refX - 4, refY - 32, 8, 4); // Cap
+
+            function drawCartoonPuller(x, y, teamColor, pullState, isFacingLeft) {
+                ctx.save();
+                ctx.translate(x, y);
+
+                const strainAngle = isFacingLeft ? -0.22 : 0.22;
+                ctx.rotate(strainAngle);
+
+                // Shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.22)';
+                ctx.beginPath(); ctx.ellipse(0, 5, 22, 7, 0, 0, Math.PI * 2); ctx.fill();
+
+                // Shoes
+                ctx.fillStyle = '#1e293b';
+                ctx.fillRect(-14, -8, 12, 8);
+                ctx.fillRect(2, -8, 12, 8);
+
+                // Body Jersey
+                ctx.fillStyle = teamColor;
+                ctx.beginPath();
+                ctx.roundRect(-15, -42, 30, 36, 8);
+                ctx.fill();
+
+                // Jersey Stripes
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(-4, -40, 8, 32);
+
+                // Head
+                ctx.fillStyle = '#ffedd5';
+                ctx.beginPath(); ctx.arc(0, -56, 15, 0, Math.PI * 2); ctx.fill();
+
+                // Headband
+                ctx.fillStyle = teamColor;
+                ctx.fillRect(-15, -64, 30, 6);
+
+                // Eyes & Expression
+                ctx.fillStyle = '#0f172a';
+                ctx.beginPath();
+                ctx.arc(-5, -57, 2.5, 0, Math.PI * 2);
+                ctx.arc(5, -57, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Sweat Droplet
+                ctx.fillStyle = '#38bdf8';
+                ctx.beginPath(); ctx.arc(12, -60, 3, 0, Math.PI * 2); ctx.fill();
+
+                // Arms Gripping Rope
+                ctx.strokeStyle = '#ffedd5';
+                ctx.lineWidth = 7;
+                ctx.lineCap = 'round';
+                ctx.beginPath();
+                ctx.moveTo(-8, -32);
+                ctx.lineTo(isFacingLeft ? -22 : 22, -26);
+                ctx.stroke();
+
+                ctx.restore();
+            }
+
+            // Draw 3 Red Pullers (Left) & 3 Blue Pullers (Right)
+            const centerY = H * 0.72;
+            for (let i = 0; i < 3; i++) {
+                const redX = (W * 0.28) - (i * (W * 0.08)) + offsetX;
+                drawCartoonPuller(redX, centerY, '#ef4444', targetRopeOffset, false);
+
+                const blueX = (W * 0.72) + (i * (W * 0.08)) + offsetX;
+                drawCartoonPuller(blueX, centerY, '#3b82f6', targetRopeOffset, true);
+            }
+
+            const startX = (W * 0.05) + offsetX;
+            const endX = (W * 0.95) + offsetX;
+            const ropeY = H * 0.66;
+
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 10;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(startX, ropeY);
+            ctx.lineTo(endX, ropeY);
+            ctx.stroke();
+
+            // Rope Texture Pattern
+            ctx.strokeStyle = '#f59e0b';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            for (let rx = startX; rx < endX; rx += 14) {
+                ctx.moveTo(rx, ropeY - 4);
+                ctx.lineTo(rx + 6, ropeY + 4);
+            }
+            ctx.stroke();
+
+            // Center Ribbon Flag Marker
+            const centerRopeX = (W / 2) + offsetX;
+            ctx.fillStyle = '#f59e0b';
+            ctx.beginPath(); ctx.arc(centerRopeX, ropeY, 9, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath(); ctx.arc(centerRopeX, ropeY, 5, 0, Math.PI * 2); ctx.fill();
+        }
+
+        window.selectCategory = function(cat) {
+            currentCategory = cat;
+            const btnMath = document.getElementById('btnCatMath');
+            const btnCode = document.getElementById('btnCatCode');
+
+            if (cat === 'math') {
+                btnMath.className = "py-3 px-4 rounded-2xl border-2 border-amber-400 bg-amber-400/20 text-amber-300 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
+                btnCode.className = "py-3 px-4 rounded-2xl border-2 border-slate-700 bg-slate-800/50 text-slate-400 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
+            } else {
+                btnCode.className = "py-3 px-4 rounded-2xl border-2 border-amber-400 bg-amber-400/20 text-amber-300 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
+                btnMath.className = "py-3 px-4 rounded-2xl border-2 border-slate-700 bg-slate-800/50 text-slate-400 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
+            }
+        };
+
+        window.startSinglePlayer = function() {
+            gameMode = 'vsBot';
+            initGameplayUI();
+        };
+
+        window.startLocal2P = function() {
+            gameMode = 'local2P';
+            initGameplayUI();
+        };
+
+        window.showOnlineLobby = function() {
+            mainMenu.classList.add('hidden');
+            onlineLobby.classList.remove('hidden');
+        };
+
+        window.backToMainMenu = function() {
+            stopTimer();
+            onlineLobby.classList.add('hidden');
+            gameplayScreen.classList.add('hidden');
+            mainMenu.classList.remove('hidden');
+        };
+
+        function initGameplayUI() {
+            mainMenu.classList.add('hidden');
+            onlineLobby.classList.add('hidden');
+            gameplayScreen.classList.remove('hidden');
+
+            targetRopeOffset = 0;
+            currentRopeOffset = 0;
+            activeTurn = 2; // hanya Tim Biru yang menjawab
+
+            document.getElementById('badgeSubjectIcon').textContent = currentCategory === 'math' ? '🧮' : '💻';
+            document.getElementById('badgeSubjectName').textContent = currentCategory === 'math' ? 'MATEMATIKA' : 'PEMROGRAMAN';
+
+            setTimeout(() => {
+                init2DArena();
+                playSound('whistle');
+            }, 100);
+
+            loadNextQuestion();
+            updateHUD();
+        }
+
+        function loadNextQuestion() {
+            const bank = questionBanks[currentCategory];
+            const randomIndex = Math.floor(Math.random() * bank.length);
+            currentQuestion = bank[randomIndex];
+
+            const qText = document.getElementById('questionText');
+            if (qText) qText.textContent = currentQuestion.q;
+
+            const grid = document.getElementById('optionsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+
+            currentQuestion.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn p-3.5 rounded-2xl font-game font-bold text-sm md:text-base text-white text-left transition flex items-center space-x-3 btn-3d";
+                btn.innerHTML = `
+                    <span class="w-7 h-7 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-300 text-xs">${String.fromCharCode(65 + idx)}</span>
+                    <span>${opt}</span>
+                `;
+                btn.onclick = () => handleAnswer(idx);
+                grid.appendChild(btn);
+            });
+
+            startTimer();
+        }
+
+        window.refreshCurrentQuestion = function() {
+            playSound('pull');
+            loadNextQuestion();
+        };
+
+        function showFloatingScore(text, colorClass) {
+            const container = document.getElementById('popupsContainer');
+            if (!container) return;
+            const pop = document.createElement('div');
+            pop.className = `font-game font-black text-xl md:text-2xl ${colorClass} animate-score-pop drop-shadow-lg`;
+            pop.textContent = text;
+            container.appendChild(pop);
+            setTimeout(() => pop.remove(), 1000);
+        }
+
+        // ===== TIMER & ATURAN: hanya Tim Biru yang menjawab =====
+        const ANSWER_TIME = 10; // detik
+        let timeLeft = ANSWER_TIME;
+        let timerId = null;
+        let roundLocked = false;
+
+        function stopTimer() {
+            if (timerId) {
+                clearInterval(timerId);
+                timerId = null;
+            }
+        }
+
+        function renderTimer() {
+            const bar = document.getElementById('timerBar');
+            const txt = document.getElementById('timerText');
+            if (bar) {
+                bar.style.width = `${Math.max(0, (timeLeft / ANSWER_TIME) * 100)}%`;
+                bar.className = 'h-full rounded-full ' + (timeLeft <= 3 ? 'bg-red-500' : timeLeft <= 6 ? 'bg-amber-400' : 'bg-emerald-400');
+            }
+            if (txt) txt.textContent = Math.max(0, Math.ceil(timeLeft));
+        }
+
+        function startTimer() {
+            stopTimer();
+            timeLeft = ANSWER_TIME;
+            roundLocked = false;
+            renderTimer();
+            timerId = setInterval(() => {
+                timeLeft = Math.round((timeLeft - 0.1) * 10) / 10;
+                renderTimer();
+                if (timeLeft <= 0) {
+                    resolveRound(false, true);
+                }
+            }, 100);
+        }
+
+        function resolveRound(blueCorrect, timedOut) {
+            if (roundLocked) return;
+            roundLocked = true;
+            stopTimer();
+
+            if (blueCorrect) {
+                playSound('correct');
+                playSound('pull');
+                targetRopeOffset += 15;
+                showFloatingScore("TIM BIRU BENAR! NARIK +15m 🪢", "text-blue-400");
+            } else {
+                playSound('wrong');
+                playSound('pull');
+                targetRopeOffset -= 15;
+                showFloatingScore(timedOut ? "WAKTU HABIS! TIM MERAH NARIK 🪢" : "TIM BIRU SALAH! TIM MERAH NARIK 🪢", "text-red-400");
+            }
+
+            updateHUD();
+
+            if (targetRopeOffset <= -75) {
+                playSound('win');
+                showWinModal(gameMode === 'vsBot' ? "🤖 BOT AI MENANG!" : "🎉 TIM MERAH MENANG!", "Tim Merah berhasil menarik tali ke garis finish!");
+                return;
+            } else if (targetRopeOffset >= 75) {
+                playSound('win');
+                showWinModal("🎉 TIM BIRU MENANG!", "Selamat! Tim Biru berhasil menarik tali ke garis finish!");
+                return;
+            }
+
+            loadNextQuestion();
+        }
+
+        function handleAnswer(selectedIdx) {
+            if (!currentQuestion || roundLocked) return;
+            resolveRound(selectedIdx === currentQuestion.ans, false);
+        }
+
+        function updateHUD() {
+            const pullBar = document.getElementById('pullProgress');
+            if (pullBar) {
+                const percentage = Math.max(0, Math.min(100, 50 + (targetRopeOffset / 1.5)));
+                pullBar.style.width = `${percentage}%`;
+            }
+
+            const s1 = document.getElementById('scoreTeam1');
+            const s2 = document.getElementById('scoreTeam2');
+            if (s1) s1.textContent = `${targetRopeOffset < 0 ? Math.abs(Math.round(targetRopeOffset)) : 0}m`;
+            if (s2) s2.textContent = `${targetRopeOffset > 0 ? Math.round(targetRopeOffset) : 0}m`;
+
+            const turnBadge = document.getElementById('turnIndicatorBadge');
+            if (turnBadge) {
+                turnBadge.textContent = activeTurn === 1 ? "GILIRAN: TIM MERAH" : "GILIRAN: TIM BIRU";
+            }
+        }
+
+        function showWinModal(title, subtext) {
+            document.getElementById('winTitleText').textContent = title;
+            document.getElementById('winSubText').textContent = subtext;
+            window.openModal('modalWin');
+        }
+
+        window.createOnlineRoom = async function() {
+            const generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
+            try {
+                if (!auth.currentUser) await signInAnonymously(auth);
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', generatedCode);
+                await setDoc(roomRef, {
+                    code: generatedCode,
+                    ropeOffset: 0,
+                    activeTurn: 1,
+                    status: 'waiting'
+                });
+                document.getElementById('hudRoomCode').classList.remove('hidden');
+                document.getElementById('textRoomCodeDisplay').textContent = generatedCode;
+                gameMode = 'online';
+                initGameplayUI();
+            } catch (err) {
+                console.error("Firebase Room Error:", err);
+            }
+        };
+
+        window.joinOnlineRoom = async function() {
+            const inputCode = document.getElementById('inputRoomCode')?.value?.trim();
+            if (!inputCode) return;
+            try {
+                if (!auth.currentUser) await signInAnonymously(auth);
+                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', inputCode);
+                const snap = await getDoc(roomRef);
+                if (snap.exists()) {
+                    gameMode = 'online';
+                    document.getElementById('hudRoomCode').classList.remove('hidden');
+                    document.getElementById('textRoomCodeDisplay').textContent = inputCode;
+                    initGameplayUI();
+                }
+            } catch (err) {
+                console.error("Firebase Join Error:", err);
+            }
+        };
+
+        function runLoadingSequence() {
+            const progressBar = document.getElementById('loadingProgress');
+            const percentText = document.getElementById('loadingPercentText');
+            const loadingText = document.getElementById('loadingText');
+            let progress = 0;
+
+            const interval = setInterval(() => {
+                progress += 10;
+                if (progressBar) progressBar.style.width = `${progress}%`;
+                if (percentText) percentText.textContent = `${progress}%`;
+
+                if (progress === 40 && loadingText) loadingText.textContent = "Menyiapkan Arena & Tim Atlet...";
+                if (progress === 80 && loadingText) loadingText.textContent = "Menyiapkan bank soal karya duen & saira...";
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    if (loadingText) loadingText.textContent = "Game Siap Dimainkan! 🎉";
+                    setTimeout(window.dismissLoadingScreen, 400);
+                }
+            }, 120);
+        }
+
+        window.dismissLoadingScreen = function() {
+            const loader = document.getElementById('loadingScreen');
+            if (loader) {
+                loader.classList.add('opacity-0');
+                setTimeout(() => loader.classList.add('hidden'), 500);
+            }
+        };
+
+        window.replayLoadingScreen = function() {
+            const loader = document.getElementById('loadingScreen');
+            if (loader) {
+                loader.classList.remove('hidden', 'opacity-0');
+                runLoadingSequence();
+            }
+        };
+
+        window.openModal = function(id) {
+            document.getElementById(id)?.classList.remove('hidden');
+        };
+        window.closeModal = function(id) {
+            document.getElementById(id)?.classList.add('hidden');
+        };
+
+        window.confirmExitGame = function() {
+            window.openModal('modalConfirmExit');
+        };
+        window.playAgain = function() {
+            window.closeModal('modalWin');
+            initGameplayUI();
+        };
+        window.executeExitToMenu = function() {
+            window.closeModal('modalConfirmExit');
+            window.backToMainMenu();
+        };
+
+        if (document.readyState === 'loading') {
+            window.addEventListener('DOMContentLoaded', () => {
+                runLoadingSequence();
+            });
+        } else {
+            runLoadingSequence();
+        }
+    </script>
 </body>
 </html>
