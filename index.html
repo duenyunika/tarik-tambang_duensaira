@@ -14,6 +14,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- PeerJS (mabar online tanpa akun & tanpa Firebase) -->
+    <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 
     <style>
         body {
@@ -94,7 +96,7 @@
             border: 2px solid rgba(255, 255, 255, 0.12);
             transition: all 0.15s ease;
         }
-        .option-btn:hover {
+        .option-btn:hover:not(:disabled) {
             border-color: #fbbf24;
             background: rgba(51, 65, 85, 0.95);
             transform: translateY(-2px);
@@ -112,7 +114,7 @@
             100% { opacity: 0; transform: translateY(-50px) scale(1.3); }
         }
         .animate-score-pop {
-            animation: scoreFloat 1s forwards ease-out;
+            animation: scoreFloat 1.2s forwards ease-out;
         }
     </style>
 </head>
@@ -139,7 +141,7 @@
     <!-- OPENING LOGO & LOADING SCREEN -->
     <div id="loadingScreen" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-slate-950 text-white p-6 transition-opacity duration-500">
         <div class="max-w-md w-full flex flex-col items-center text-center space-y-5">
-            
+
             <!-- Circular Non-Square Dynamic Emblem Logo -->
             <div class="relative flex items-center justify-center">
                 <div class="logo-emblem-circle flex flex-col items-center justify-center relative">
@@ -149,7 +151,7 @@
                     <span class="text-[10px] font-game font-black text-amber-950 uppercase tracking-widest bg-amber-200 px-2.5 py-0.5 rounded-full shadow">EDUSATU</span>
                 </div>
             </div>
-            
+
             <div>
                 <h1 class="text-3xl md:text-4xl font-game font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-amber-400 to-amber-500 tracking-wide drop-shadow-lg">
                     TARIK TAMBANG ILMU
@@ -204,10 +206,10 @@
 
     <!-- MAIN MENU CONTAINER -->
     <main class="w-full max-w-5xl flex-1 flex flex-col items-center justify-center z-10">
-        
+
         <!-- MAIN MENU PANEL -->
         <div id="mainMenu" class="w-full max-w-xl glass-card rounded-3xl p-6 md:p-8 shadow-2xl text-center space-y-6">
-            
+
             <!-- Category Subject Selection -->
             <div>
                 <h3 class="text-xs font-game font-bold tracking-wider text-amber-300 mb-3 uppercase">PILIH KATEGORI SOAL:</h3>
@@ -226,7 +228,7 @@
             <!-- Game Mode Buttons -->
             <div class="space-y-3 pt-1">
                 <h3 class="text-xs font-game font-bold tracking-wider text-amber-300 mb-2 uppercase">PILIH MODE PERMAINAN:</h3>
-                
+
                 <!-- Vs Bot -->
                 <button onclick="window.startSinglePlayer()" class="w-full p-3.5 md:p-4 rounded-2xl btn-amber flex items-center justify-between font-game font-black text-base md:text-lg btn-3d">
                     <div class="flex items-center space-x-3">
@@ -266,36 +268,62 @@
         </div>
 
         <!-- ONLINE LOBBY PANEL -->
-        <div id="onlineLobby" class="w-full max-w-md glass-card rounded-3xl p-6 shadow-2xl text-center space-y-6 hidden">
+        <div id="onlineLobby" class="w-full max-w-md glass-card rounded-3xl p-6 shadow-2xl text-center space-y-5 hidden">
             <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
                 <button onclick="window.backToMainMenu()" class="text-slate-400 hover:text-white"><i class="fas fa-chevron-left text-lg"></i></button>
                 <h3 class="font-game text-xl font-bold text-amber-300">MABAR ONLINE</h3>
                 <div class="w-5"></div>
             </div>
 
-            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-3">
-                <h4 class="text-xs font-bold text-slate-300 uppercase">BUAT RUANGAN BARU</h4>
-                <button onclick="window.createOnlineRoom()" class="w-full py-3 btn-amber font-game font-bold rounded-xl btn-3d">
-                    <i class="fas fa-plus-circle mr-2"></i> Buat Room & Dapatkan Kode
-                </button>
+            <!-- Form buat / gabung room -->
+            <div id="lobbyForms" class="space-y-5">
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+                    <h4 class="text-xs font-bold text-slate-300 uppercase">BUAT RUANGAN BARU</h4>
+                    <button onclick="window.createOnlineRoom()" class="w-full py-3 btn-amber font-game font-bold rounded-xl btn-3d">
+                        <i class="fas fa-plus-circle mr-2"></i> Buat Room & Dapatkan Kode
+                    </button>
+                </div>
+
+                <div class="text-slate-500 font-bold text-xs uppercase">— ATAU —</div>
+
+                <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-3">
+                    <h4 class="text-xs font-bold text-slate-300 uppercase">MASUK KODE ROOM TEMAN</h4>
+                    <div class="flex space-x-2">
+                        <input id="inputRoomCode" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="4 ANGKA" class="flex-1 min-w-0 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-center font-mono font-bold text-amber-300 uppercase focus:outline-none focus:border-amber-400">
+                        <button onclick="window.joinOnlineRoom()" class="px-5 btn-blue font-game font-bold rounded-xl btn-3d">
+                            GABUNG
+                        </button>
+                    </div>
+                </div>
             </div>
 
-            <div class="text-slate-500 font-bold text-xs uppercase">— ATAU —</div>
-
-            <div class="bg-slate-900/80 p-4 rounded-2xl border border-slate-700 space-y-3">
-                <h4 class="text-xs font-bold text-slate-300 uppercase">MASUK KODE ROOM TEMAN</h4>
-                <div class="flex space-x-2">
-                    <input id="inputRoomCode" type="text" maxlength="4" placeholder="4 ANGKA" class="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-center font-mono font-bold text-amber-300 uppercase focus:outline-none focus:border-amber-400">
-                    <button onclick="window.joinOnlineRoom()" class="px-5 btn-blue font-game font-bold rounded-xl btn-3d">
-                        GABUNG
+            <!-- Panel menunggu teman (host) -->
+            <div id="lobbyWaiting" class="bg-slate-900/80 p-5 rounded-2xl border border-emerald-500/40 space-y-3 hidden">
+                <h4 class="text-xs font-bold text-slate-300 uppercase">KODE ROOM KAMU</h4>
+                <div id="waitingCode" class="font-mono font-black text-5xl tracking-[0.3em] text-emerald-400">----</div>
+                <p class="text-xs text-slate-300">Bagikan kode ini ke temanmu, lalu tunggu dia bergabung.</p>
+                <p class="text-[11px] text-amber-300 font-bold">Kategori: <span id="waitingCat">Matematika Dasar</span></p>
+                <div class="flex items-center justify-center space-x-2 text-xs text-slate-400">
+                    <i class="fas fa-circle-notch fa-spin"></i>
+                    <span>Menunggu teman bergabung...</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3 pt-1">
+                    <button onclick="window.copyRoomCode()" class="py-2.5 btn-emerald font-game font-bold rounded-xl text-sm btn-3d">
+                        <i class="fas fa-copy mr-1"></i> Salin Kode
+                    </button>
+                    <button onclick="window.cancelWaiting()" class="py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-game font-bold rounded-xl text-sm border border-slate-600">
+                        Batal
                     </button>
                 </div>
             </div>
+
+            <!-- Status koneksi -->
+            <div id="lobbyStatus" class="text-xs font-bold text-slate-300 hidden"></div>
         </div>
 
         <!-- GAMEPLAY SCREEN -->
         <div id="gameplayScreen" class="w-full max-w-4xl space-y-4 hidden">
-            
+
             <!-- Top HUD Bar -->
             <div class="glass-card rounded-2xl p-3.5 md:p-4 flex flex-col md:flex-row items-center justify-between gap-3 border border-slate-700">
                 <div class="flex items-center space-x-3 w-full md:w-auto justify-between md:justify-start">
@@ -326,8 +354,8 @@
                 <canvas id="gameCanvas"></canvas>
 
                 <!-- Floating Popup Container -->
-                <div id="popupsContainer" class="absolute inset-0 pointer-events-none flex items-center justify-center"></div>
-                
+                <div id="popupsContainer" class="absolute inset-0 pointer-events-none flex items-center justify-center text-center px-4"></div>
+
                 <div class="absolute top-3 left-3 bg-slate-950/85 border border-amber-400/40 px-3 py-1 rounded-xl text-xs font-game font-bold text-amber-300 flex items-center space-x-1 shadow-lg pointer-events-none">
                     <span id="badgeSubjectIcon">🧮</span>
                     <span id="badgeSubjectName">MATEMATIKA</span>
@@ -343,7 +371,7 @@
                 <div class="flex items-center justify-between border-b border-slate-700/80 pb-3">
                     <span id="turnIndicatorBadge" class="px-4 py-1 bg-amber-400 text-amber-950 font-game font-black text-xs rounded-xl uppercase">GILIRAN: TIM MERAH</span>
 
-                    <button onclick="window.refreshCurrentQuestion()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-game font-bold border border-slate-600 transition flex items-center space-x-1.5 btn-3d">
+                    <button id="btnRefreshQ" onclick="window.refreshCurrentQuestion()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-amber-300 rounded-xl text-xs font-game font-bold border border-slate-600 transition flex items-center space-x-1.5 btn-3d">
                         <i class="fas fa-sync-alt"></i>
                         <span>Ganti Soal</span>
                     </button>
@@ -378,11 +406,14 @@
         </button>
     </footer>
 
+    <!-- TOAST NOTIFIKASI -->
+    <div id="toast" class="fixed left-1/2 -translate-x-1/2 bottom-6 z-[60] max-w-[90%] bg-slate-800 border border-amber-400/50 text-white text-xs font-bold px-4 py-2.5 rounded-2xl shadow-2xl transition-opacity duration-300 opacity-0 pointer-events-none text-center"></div>
+
     <!-- MODAL ABOUT US -->
     <div id="modalAbout" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-md flex items-center justify-center p-4 hidden">
         <div class="w-full max-w-md glass-card rounded-3xl p-6 space-y-5 border border-amber-400/40 shadow-2xl relative">
             <button onclick="window.closeModal('modalAbout')" class="absolute top-4 right-4 text-slate-400 hover:text-white"><i class="fas fa-times text-xl"></i></button>
-            
+
             <div class="text-center space-y-2">
                 <div class="text-5xl">🪢</div>
                 <h3 class="font-game text-2xl font-black text-amber-300">TENTANG KAMI</h3>
@@ -435,35 +466,9 @@
     </div>
 
     <script type="module">
-        // Firebase dimuat di belakang layar agar loading & game tidak tertahan koneksi lambat
-        let initializeApp, getAuth, signInAnonymously, getFirestore, doc, setDoc, getDoc;
-
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tarik-tambang-app-2d-v2';
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            apiKey: "demo-key",
-            authDomain: "demo.firebaseapp.com",
-            projectId: "demo-project",
-            storageBucket: "demo.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "1:123456789:web:abcdef"
-        };
-
-        let auth = null;
-        let db = null;
-        (async () => {
-            try {
-                ({ initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js"));
-                ({ getAuth, signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js"));
-                ({ getFirestore, doc, setDoc, getDoc } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js"));
-                const app = initializeApp(firebaseConfig);
-                auth = getAuth(app);
-                db = getFirestore(app);
-            } catch (err) {
-                console.warn("Firebase gagal dimuat (mode online tidak tersedia):", err);
-            }
-        })();
-
-        // Audio Synthesizer
+        // =====================================================
+        //  AUDIO
+        // =====================================================
         let audioCtx = null;
         let isMuted = false;
 
@@ -475,7 +480,7 @@
 
         function playSound(type) {
             if (isMuted) return;
-            initAudio();
+            try { initAudio(); } catch (e) { return; }
             if (!audioCtx) return;
 
             const osc = audioCtx.createOscillator();
@@ -538,6 +543,9 @@
             }
         };
 
+        // =====================================================
+        //  BANK SOAL
+        // =====================================================
         const questionBanks = {
             math: [
                 { q: "Berapakah hasil dari 12 + 15?", options: ["25", "27", "29", "32"], ans: 1 },
@@ -563,32 +571,67 @@
             ]
         };
 
+        // =====================================================
+        //  STATE UMUM
+        // =====================================================
         let currentCategory = 'math';
-        let gameMode = 'vsBot';
+        let gameMode = 'vsBot';          // 'vsBot' | 'local2P' | 'online'
         let targetRopeOffset = 0;
         let currentRopeOffset = 0;
-        let activeTurn = 1;
+        let activeTurn = 1;              // 1 = Merah, 2 = Biru
         let currentQuestion = null;
+        let lastQIdx = -1;
+        let matchOver = false;
+
+        const ANSWER_TIME = 10;          // detik
+        const PULL_STEP = 15;
+        const WIN_DISTANCE = 75;
+        let timeLeft = ANSWER_TIME;
+        let timerId = null;
+        let roundLocked = false;
 
         const mainMenu = document.getElementById('mainMenu');
         const onlineLobby = document.getElementById('onlineLobby');
         const gameplayScreen = document.getElementById('gameplayScreen');
 
+        function isOnline() { return gameMode === 'online'; }
+        function teamName(t) { return t === 1 ? 'TIM MERAH' : 'TIM BIRU'; }
+
+        // =====================================================
+        //  TOAST
+        // =====================================================
+        let toastTimer = null;
+        function toast(msg) {
+            const el = document.getElementById('toast');
+            if (!el) return;
+            el.textContent = msg;
+            el.classList.remove('opacity-0');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.add('opacity-0'), 3200);
+        }
+
+        // =====================================================
+        //  ARENA 2D (CANVAS)
+        // =====================================================
         let canvas, ctx;
         let isCanvasInit = false;
+        let resizeBound = false;
+
+        function resizeCanvas() {
+            if (!canvas || !canvas.parentElement) return;
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
 
         function init2DArena() {
             canvas = document.getElementById('gameCanvas');
             if (!canvas) return;
             ctx = canvas.getContext('2d');
-            
-            function resizeCanvas() {
-                canvas.width = canvas.parentElement.clientWidth;
-                canvas.height = canvas.parentElement.clientHeight;
-            }
             resizeCanvas();
-            window.addEventListener('resize', resizeCanvas);
-
+            if (!resizeBound) {
+                window.addEventListener('resize', resizeCanvas);
+                resizeBound = true;
+            }
             if (!isCanvasInit) {
                 isCanvasInit = true;
                 requestAnimationFrame(renderLoop);
@@ -743,18 +786,17 @@
             ctx.beginPath(); ctx.arc(centerRopeX, ropeY, 5, 0, Math.PI * 2); ctx.fill();
         }
 
+        // =====================================================
+        //  MENU & NAVIGASI
+        // =====================================================
         window.selectCategory = function(cat) {
             currentCategory = cat;
             const btnMath = document.getElementById('btnCatMath');
             const btnCode = document.getElementById('btnCatCode');
-
-            if (cat === 'math') {
-                btnMath.className = "py-3 px-4 rounded-2xl border-2 border-amber-400 bg-amber-400/20 text-amber-300 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
-                btnCode.className = "py-3 px-4 rounded-2xl border-2 border-slate-700 bg-slate-800/50 text-slate-400 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
-            } else {
-                btnCode.className = "py-3 px-4 rounded-2xl border-2 border-amber-400 bg-amber-400/20 text-amber-300 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
-                btnMath.className = "py-3 px-4 rounded-2xl border-2 border-slate-700 bg-slate-800/50 text-slate-400 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
-            }
+            const on = "py-3 px-4 rounded-2xl border-2 border-amber-400 bg-amber-400/20 text-amber-300 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
+            const off = "py-3 px-4 rounded-2xl border-2 border-slate-700 bg-slate-800/50 text-slate-400 font-game font-bold text-sm md:text-base flex items-center justify-center space-x-2 transition";
+            btnMath.className = cat === 'math' ? on : off;
+            btnCode.className = cat === 'code' ? on : off;
         };
 
         window.startSinglePlayer = function() {
@@ -770,63 +812,116 @@
         window.showOnlineLobby = function() {
             mainMenu.classList.add('hidden');
             onlineLobby.classList.remove('hidden');
+            showLobbyForms(true);
+            setLobbyStatus('');
         };
 
         window.backToMainMenu = function() {
             stopTimer();
+            if (online.peer || online.conn) cleanupOnline();
+            showLobbyForms(true);
+            setLobbyStatus('');
             onlineLobby.classList.add('hidden');
             gameplayScreen.classList.add('hidden');
             mainMenu.classList.remove('hidden');
         };
 
         function initGameplayUI() {
+            stopTimer();
             mainMenu.classList.add('hidden');
             onlineLobby.classList.add('hidden');
             gameplayScreen.classList.remove('hidden');
 
             targetRopeOffset = 0;
             currentRopeOffset = 0;
-            activeTurn = 2; // hanya Tim Biru yang menjawab
+            roundLocked = false;
+            matchOver = false;
+            lastQIdx = -1;
+            // Offline: hanya Tim Biru yang menjawab. Online: mulai dari Tim Merah (host), lalu bergantian.
+            activeTurn = isOnline() ? 1 : 2;
 
             document.getElementById('badgeSubjectIcon').textContent = currentCategory === 'math' ? '🧮' : '💻';
             document.getElementById('badgeSubjectName').textContent = currentCategory === 'math' ? 'MATEMATIKA' : 'PEMROGRAMAN';
+
+            // Label tim
+            const l1 = document.getElementById('labelTeam1');
+            const l2 = document.getElementById('labelTeam2');
+            if (isOnline()) {
+                const host = online.role === 'host';
+                l1.textContent = host ? 'TIM MERAH (KAMU)' : 'TIM MERAH (LAWAN)';
+                l2.textContent = host ? 'TIM BIRU (LAWAN)' : 'TIM BIRU (KAMU)';
+            } else {
+                l1.textContent = 'TIM MERAH (3)';
+                l2.textContent = 'TIM BIRU (3)';
+            }
+
+            // HUD kode room & tombol ganti soal
+            const hud = document.getElementById('hudRoomCode');
+            hud.classList.toggle('hidden', !isOnline());
+            if (isOnline()) document.getElementById('textRoomCodeDisplay').textContent = online.code || '----';
+            document.getElementById('btnRefreshQ').classList.toggle('hidden', isOnline());
+
+            // Reset tampilan soal
+            document.getElementById('questionText').textContent = isOnline() ? 'Pertandingan dimulai...' : 'Memuat pertanyaan...';
+            document.getElementById('optionsGrid').innerHTML = '';
+            renderTimer();
 
             setTimeout(() => {
                 init2DArena();
                 playSound('whistle');
             }, 100);
 
-            loadNextQuestion();
+            if (!isOnline()) loadNextQuestion();
             updateHUD();
         }
 
-        function loadNextQuestion() {
-            const bank = questionBanks[currentCategory];
-            const randomIndex = Math.floor(Math.random() * bank.length);
-            currentQuestion = bank[randomIndex];
+        // =====================================================
+        //  SOAL
+        // =====================================================
+        function isMyTurn() {
+            const myTeam = online.role === 'host' ? 1 : 2;
+            return activeTurn === myTeam;
+        }
 
+        function renderQuestion(q) {
+            currentQuestion = q;
             const qText = document.getElementById('questionText');
-            if (qText) qText.textContent = currentQuestion.q;
+            if (qText) qText.textContent = q.q;
 
             const grid = document.getElementById('optionsGrid');
             if (!grid) return;
             grid.innerHTML = '';
 
-            currentQuestion.options.forEach((opt, idx) => {
+            const canAnswer = !isOnline() || isMyTurn();
+
+            q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "option-btn p-3.5 rounded-2xl font-game font-bold text-sm md:text-base text-white text-left transition flex items-center space-x-3 btn-3d";
-                btn.innerHTML = `
-                    <span class="w-7 h-7 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-300 text-xs">${String.fromCharCode(65 + idx)}</span>
-                    <span>${opt}</span>
-                `;
+                btn.className = "option-btn p-3.5 rounded-2xl font-game font-bold text-sm md:text-base text-white text-left transition flex items-center space-x-3 btn-3d" + (canAnswer ? "" : " opacity-60 cursor-not-allowed");
+                btn.disabled = !canAnswer;
+
+                const letter = document.createElement('span');
+                letter.className = "w-7 h-7 shrink-0 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-amber-300 text-xs";
+                letter.textContent = String.fromCharCode(65 + idx);
+
+                const label = document.createElement('span');
+                label.textContent = opt;   // textContent: aman untuk teks seperti <h1>
+
+                btn.appendChild(letter);
+                btn.appendChild(label);
                 btn.onclick = () => handleAnswer(idx);
                 grid.appendChild(btn);
             });
+        }
 
+        function loadNextQuestion() {
+            const bank = questionBanks[currentCategory];
+            const randomIndex = Math.floor(Math.random() * bank.length);
+            renderQuestion(bank[randomIndex]);
             startTimer();
         }
 
         window.refreshCurrentQuestion = function() {
+            if (isOnline()) return;
             playSound('pull');
             loadNextQuestion();
         };
@@ -838,15 +933,12 @@
             pop.className = `font-game font-black text-xl md:text-2xl ${colorClass} animate-score-pop drop-shadow-lg`;
             pop.textContent = text;
             container.appendChild(pop);
-            setTimeout(() => pop.remove(), 1000);
+            setTimeout(() => pop.remove(), 1200);
         }
 
-        // ===== TIMER & ATURAN: hanya Tim Biru yang menjawab =====
-        const ANSWER_TIME = 10; // detik
-        let timeLeft = ANSWER_TIME;
-        let timerId = null;
-        let roundLocked = false;
-
+        // =====================================================
+        //  TIMER
+        // =====================================================
         function stopTimer() {
             if (timerId) {
                 clearInterval(timerId);
@@ -873,11 +965,23 @@
                 timeLeft = Math.round((timeLeft - 0.1) * 10) / 10;
                 renderTimer();
                 if (timeLeft <= 0) {
-                    resolveRound(false, true);
+                    onTimeUp();
                 }
             }, 100);
         }
 
+        function onTimeUp() {
+            if (isOnline()) {
+                if (online.role === 'host') hostResolve(null, true);
+                else stopTimer(); // tamu menunggu hasil resmi dari host
+            } else {
+                resolveRound(false, true);
+            }
+        }
+
+        // =====================================================
+        //  LOGIKA OFFLINE (VS BOT & MABAR 1 HP)
+        // =====================================================
         function resolveRound(blueCorrect, timedOut) {
             if (roundLocked) return;
             roundLocked = true;
@@ -886,22 +990,22 @@
             if (blueCorrect) {
                 playSound('correct');
                 playSound('pull');
-                targetRopeOffset += 15;
+                targetRopeOffset += PULL_STEP;
                 showFloatingScore("TIM BIRU BENAR! NARIK +15m 🪢", "text-blue-400");
             } else {
                 playSound('wrong');
                 playSound('pull');
-                targetRopeOffset -= 15;
+                targetRopeOffset -= PULL_STEP;
                 showFloatingScore(timedOut ? "WAKTU HABIS! TIM MERAH NARIK 🪢" : "TIM BIRU SALAH! TIM MERAH NARIK 🪢", "text-red-400");
             }
 
             updateHUD();
 
-            if (targetRopeOffset <= -75) {
+            if (targetRopeOffset <= -WIN_DISTANCE) {
                 playSound('win');
                 showWinModal(gameMode === 'vsBot' ? "🤖 BOT AI MENANG!" : "🎉 TIM MERAH MENANG!", "Tim Merah berhasil menarik tali ke garis finish!");
                 return;
-            } else if (targetRopeOffset >= 75) {
+            } else if (targetRopeOffset >= WIN_DISTANCE) {
                 playSound('win');
                 showWinModal("🎉 TIM BIRU MENANG!", "Selamat! Tim Biru berhasil menarik tali ke garis finish!");
                 return;
@@ -912,9 +1016,30 @@
 
         function handleAnswer(selectedIdx) {
             if (!currentQuestion || roundLocked) return;
+
+            if (isOnline()) {
+                if (!isMyTurn()) return;
+                if (online.role === 'host') {
+                    hostResolve(selectedIdx, false);
+                } else {
+                    // Tamu: kirim jawaban ke host, host yang menentukan hasilnya
+                    roundLocked = true;
+                    const btns = Array.from(document.getElementById('optionsGrid').children);
+                    btns.forEach((b, i) => {
+                        b.disabled = true;
+                        if (i === selectedIdx) b.classList.add('!border-amber-400');
+                    });
+                    sendMsg({ t: 'ans', idx: selectedIdx });
+                }
+                return;
+            }
+
             resolveRound(selectedIdx === currentQuestion.ans, false);
         }
 
+        // =====================================================
+        //  HUD
+        // =====================================================
         function updateHUD() {
             const pullBar = document.getElementById('pullProgress');
             if (pullBar) {
@@ -929,7 +1054,19 @@
 
             const turnBadge = document.getElementById('turnIndicatorBadge');
             if (turnBadge) {
-                turnBadge.textContent = activeTurn === 1 ? "GILIRAN: TIM MERAH" : "GILIRAN: TIM BIRU";
+                const base = "px-4 py-1 font-game font-black text-xs rounded-xl uppercase ";
+                if (isOnline()) {
+                    if (isMyTurn()) {
+                        turnBadge.textContent = "GILIRAN KAMU 👈";
+                        turnBadge.className = base + "bg-emerald-400 text-emerald-950";
+                    } else {
+                        turnBadge.textContent = "GILIRAN LAWAN ⏳";
+                        turnBadge.className = base + "bg-slate-700 text-slate-200";
+                    }
+                } else {
+                    turnBadge.textContent = activeTurn === 1 ? "GILIRAN: TIM MERAH" : "GILIRAN: TIM BIRU";
+                    turnBadge.className = base + "bg-amber-400 text-amber-950";
+                }
             }
         }
 
@@ -939,44 +1076,363 @@
             window.openModal('modalWin');
         }
 
-        window.createOnlineRoom = async function() {
-            const generatedCode = Math.floor(1000 + Math.random() * 9000).toString();
-            try {
-                if (!auth.currentUser) await signInAnonymously(auth);
-                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', generatedCode);
-                await setDoc(roomRef, {
-                    code: generatedCode,
-                    ropeOffset: 0,
-                    activeTurn: 1,
-                    status: 'waiting'
-                });
-                document.getElementById('hudRoomCode').classList.remove('hidden');
-                document.getElementById('textRoomCodeDisplay').textContent = generatedCode;
-                gameMode = 'online';
-                initGameplayUI();
-            } catch (err) {
-                console.error("Firebase Room Error:", err);
-            }
-        };
+        // =====================================================
+        //  MABAR ONLINE (PeerJS / WebRTC — tanpa akun & tanpa Firebase)
+        //  Host = Tim Merah, Tamu = Tim Biru. Host menentukan soal, tali,
+        //  giliran & pemenang, lalu mengirimnya ke tamu.
+        // =====================================================
+        const PEER_PREFIX = 'tarik-tambang-ilmu-v1-';
+        let online = { peer: null, conn: null, role: null, code: null, connectTimeout: null };
 
-        window.joinOnlineRoom = async function() {
-            const inputCode = document.getElementById('inputRoomCode')?.value?.trim();
-            if (!inputCode) return;
+        function sendMsg(msg) {
             try {
-                if (!auth.currentUser) await signInAnonymously(auth);
-                const roomRef = doc(db, 'artifacts', appId, 'public', 'data', 'rooms', inputCode);
-                const snap = await getDoc(roomRef);
-                if (snap.exists()) {
-                    gameMode = 'online';
-                    document.getElementById('hudRoomCode').classList.remove('hidden');
-                    document.getElementById('textRoomCodeDisplay').textContent = inputCode;
-                    initGameplayUI();
+                if (online.conn && online.conn.open) online.conn.send(msg);
+            } catch (e) { console.warn('Gagal kirim pesan', e); }
+        }
+
+        function setLobbyStatus(text, type) {
+            const el = document.getElementById('lobbyStatus');
+            if (!el) return;
+            el.textContent = text || '';
+            el.className = 'text-xs font-bold ' +
+                (type === 'error' ? 'text-red-400' : type === 'ok' ? 'text-emerald-400' : 'text-slate-300');
+            el.classList.toggle('hidden', !text);
+        }
+
+        function showLobbyForms(show) {
+            document.getElementById('lobbyForms').classList.toggle('hidden', !show);
+            document.getElementById('lobbyWaiting').classList.toggle('hidden', show);
+        }
+
+        function showWaiting(code) {
+            document.getElementById('waitingCode').textContent = code;
+            document.getElementById('waitingCat').textContent = currentCategory === 'math' ? 'Matematika Dasar' : 'Pemrograman';
+            showLobbyForms(false);
+            setLobbyStatus('');
+        }
+
+        function cleanupOnline() {
+            clearTimeout(online.connectTimeout);
+            const { conn, peer } = online;
+            online = { peer: null, conn: null, role: null, code: null, connectTimeout: null };
+            try { if (conn) conn.close(); } catch (e) {}
+            try { if (peer) peer.destroy(); } catch (e) {}
+            const hud = document.getElementById('hudRoomCode');
+            if (hud) hud.classList.add('hidden');
+        }
+
+        function handlePeerError(err) {
+            console.warn('Peer error:', err);
+            let msg = 'Terjadi masalah koneksi. Coba lagi.';
+            if (err && err.type === 'peer-unavailable') msg = 'Room tidak ditemukan. Cek lagi kodenya.';
+            else if (err && ['network', 'server-error', 'socket-error', 'socket-closed'].includes(err.type)) {
+                msg = 'Server perantara tidak bisa dijangkau. Cek internet lalu coba lagi.';
+            }
+            const inGame = !gameplayScreen.classList.contains('hidden');
+            cleanupOnline();
+            if (inGame) {
+                window.closeModal('modalWin');
+                window.backToMainMenu();
+                toast(msg);
+            } else {
+                showLobbyForms(true);
+                setLobbyStatus(msg, 'error');
+            }
+        }
+
+        function onOpponentLeft() {
+            const inGame = !gameplayScreen.classList.contains('hidden');
+            window.closeModal('modalWin');
+            window.backToMainMenu();
+            toast(inGame ? 'Lawan keluar dari room. Pertandingan dihentikan.' : 'Koneksi terputus.');
+        }
+
+        function setupConn(conn) {
+            const onOpen = () => {
+                if (conn !== online.conn) return;
+                clearTimeout(online.connectTimeout);
+                if (online.role === 'host') {
+                    hostStartMatch();
+                } else {
+                    setLobbyStatus('Terhubung! Menunggu host memulai pertandingan...', 'ok');
                 }
-            } catch (err) {
-                console.error("Firebase Join Error:", err);
+            };
+            if (conn.open) onOpen(); else conn.on('open', onOpen);
+
+            conn.on('data', (m) => { if (conn === online.conn) handleMessage(m); });
+            conn.on('close', () => { if (conn === online.conn) onOpponentLeft(); });
+            conn.on('error', () => { if (conn === online.conn) onOpponentLeft(); });
+        }
+
+        function ensurePeerJS() {
+            if (typeof Peer === 'undefined') {
+                setLobbyStatus('Library PeerJS gagal dimuat. Cek internet lalu muat ulang halaman.', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        window.createOnlineRoom = function() {
+            if (!ensurePeerJS()) return;
+            cleanupOnline();
+            tryCreateRoom(0);
+        };
+
+        function tryCreateRoom(attempt) {
+            if (attempt >= 6) {
+                cleanupOnline();
+                setLobbyStatus('Gagal membuat room. Coba lagi sebentar lagi.', 'error');
+                return;
+            }
+            const code = String(Math.floor(1000 + Math.random() * 9000));
+            setLobbyStatus('Membuat room...', 'info');
+
+            const peer = new Peer(PEER_PREFIX + code);
+            online.peer = peer;
+            online.role = 'host';
+
+            peer.on('open', () => {
+                if (online.peer !== peer) return;
+                online.code = code;
+                showWaiting(code);
+            });
+
+            peer.on('error', (err) => {
+                if (online.peer !== peer) return;
+                if (err && err.type === 'unavailable-id') {
+                    // Kode sudah dipakai orang lain: coba kode baru
+                    try { peer.destroy(); } catch (e) {}
+                    online.peer = null;
+                    tryCreateRoom(attempt + 1);
+                } else {
+                    handlePeerError(err);
+                }
+            });
+
+            peer.on('disconnected', () => {
+                if (online.peer !== peer || peer.destroyed) return;
+                try { peer.reconnect(); } catch (e) {}
+            });
+
+            peer.on('connection', (conn) => {
+                if (online.peer !== peer) return;
+                if (online.conn) {
+                    // Room sudah penuh
+                    conn.on('open', () => {
+                        try { conn.send({ t: 'full' }); } catch (e) {}
+                        setTimeout(() => { try { conn.close(); } catch (e) {} }, 400);
+                    });
+                    return;
+                }
+                online.conn = conn;
+                setupConn(conn);
+            });
+        }
+
+        window.joinOnlineRoom = function() {
+            const input = document.getElementById('inputRoomCode');
+            const code = ((input && input.value) || '').replace(/\D/g, '').slice(0, 4);
+            if (code.length !== 4) {
+                setLobbyStatus('Masukkan kode 4 angka dari temanmu.', 'error');
+                return;
+            }
+            if (!ensurePeerJS()) return;
+            cleanupOnline();
+            setLobbyStatus('Menghubungkan ke room ' + code + '...', 'info');
+
+            const peer = new Peer();
+            online.peer = peer;
+            online.role = 'guest';
+            online.code = code;
+
+            peer.on('open', () => {
+                if (online.peer !== peer) return;
+                const conn = peer.connect(PEER_PREFIX + code, { reliable: true });
+                online.conn = conn;
+                online.connectTimeout = setTimeout(() => {
+                    if (online.conn === conn && !conn.open) {
+                        cleanupOnline();
+                        showLobbyForms(true);
+                        setLobbyStatus('Gagal terhubung. Cek kode atau coba pindah ke WiFi.', 'error');
+                    }
+                }, 15000);
+                setupConn(conn);
+            });
+
+            peer.on('error', (err) => {
+                if (online.peer !== peer) return;
+                handlePeerError(err);
+            });
+
+            peer.on('disconnected', () => {
+                if (online.peer !== peer || peer.destroyed) return;
+                try { peer.reconnect(); } catch (e) {}
+            });
+        };
+
+        window.cancelWaiting = function() {
+            cleanupOnline();
+            showLobbyForms(true);
+            setLobbyStatus('');
+        };
+
+        window.copyRoomCode = function() {
+            const code = online.code;
+            if (!code) return;
+            try {
+                navigator.clipboard.writeText(code).then(
+                    () => toast('Kode ' + code + ' disalin!'),
+                    () => toast('Kode room: ' + code)
+                );
+            } catch (e) {
+                toast('Kode room: ' + code);
             }
         };
 
+        // ---------- Pesan masuk ----------
+        function handleMessage(msg) {
+            if (!msg || typeof msg !== 'object') return;
+
+            if (online.role === 'host') {
+                if (msg.t === 'ans') {
+                    if (isOnline() && !matchOver && activeTurn === 2 && !roundLocked &&
+                        currentQuestion && Number.isInteger(msg.idx)) {
+                        hostResolve(msg.idx, false);
+                    }
+                } else if (msg.t === 'again') {
+                    if (matchOver) hostStartMatch();
+                }
+                return;
+            }
+
+            // Tamu
+            if (msg.t === 'full') {
+                cleanupOnline();
+                showLobbyForms(true);
+                setLobbyStatus('Room sudah penuh.', 'error');
+            } else if (msg.t === 'start') {
+                gameMode = 'online';
+                if (questionBanks[msg.cat]) currentCategory = msg.cat;
+                window.closeModal('modalWin');
+                initGameplayUI();
+            } else if (msg.t === 'q') {
+                const bank = questionBanks[msg.cat];
+                if (!bank || !bank[msg.idx]) return;
+                currentCategory = msg.cat;
+                activeTurn = msg.turn;
+                targetRopeOffset = msg.offset;
+                renderQuestion(bank[msg.idx]);
+                startTimer();
+                updateHUD();
+            } else if (msg.t === 'result') {
+                applyResult(msg);
+            }
+        }
+
+        // ---------- Sisi host ----------
+        function hostStartMatch() {
+            if (!online.conn || !online.conn.open) return;
+            gameMode = 'online';
+            window.closeModal('modalWin');
+            sendMsg({ t: 'start', cat: currentCategory });
+            initGameplayUI();
+            setTimeout(hostNextQuestion, 900);
+        }
+
+        function hostNextQuestion() {
+            if (!isOnline() || online.role !== 'host' || !online.conn || matchOver) return;
+            const bank = questionBanks[currentCategory];
+            let idx;
+            do {
+                idx = Math.floor(Math.random() * bank.length);
+            } while (idx === lastQIdx && bank.length > 1);
+            lastQIdx = idx;
+
+            renderQuestion(bank[idx]);
+            startTimer();
+            updateHUD();
+            sendMsg({ t: 'q', cat: currentCategory, idx, turn: activeTurn, offset: targetRopeOffset });
+        }
+
+        function hostResolve(selectedIdx, timedOut) {
+            if (roundLocked || matchOver || !currentQuestion) return;
+            roundLocked = true;
+            stopTimer();
+
+            const answerer = activeTurn;
+            const correct = !timedOut && selectedIdx === currentQuestion.ans;
+            const pullingTeam = correct ? answerer : (answerer === 1 ? 2 : 1);
+            targetRopeOffset += (pullingTeam === 1 ? -PULL_STEP : PULL_STEP);
+
+            const winner = targetRopeOffset <= -WIN_DISTANCE ? 1 : (targetRopeOffset >= WIN_DISTANCE ? 2 : 0);
+
+            const payload = {
+                t: 'result',
+                correct,
+                timedOut: !!timedOut,
+                answerer,
+                offset: targetRopeOffset,
+                winner,
+                correctIdx: currentQuestion.ans,
+                picked: timedOut ? -1 : selectedIdx
+            };
+            sendMsg(payload);
+            applyResult(payload);
+
+            if (!winner) {
+                activeTurn = answerer === 1 ? 2 : 1;
+                setTimeout(hostNextQuestion, 1500);
+            }
+        }
+
+        // ---------- Dipakai host & tamu ----------
+        function applyResult(m) {
+            roundLocked = true;
+            stopTimer();
+            targetRopeOffset = m.offset;
+
+            const pullingTeam = m.correct ? m.answerer : (m.answerer === 1 ? 2 : 1);
+            const color = pullingTeam === 1 ? 'text-red-400' : 'text-blue-400';
+            let text;
+            if (m.correct) {
+                text = `${teamName(m.answerer)} BENAR! NARIK +15m 🪢`;
+            } else {
+                text = `${m.timedOut ? 'WAKTU HABIS!' : teamName(m.answerer) + ' SALAH!'} ${teamName(pullingTeam)} NARIK 🪢`;
+            }
+            playSound(m.correct ? 'correct' : 'wrong');
+            playSound('pull');
+            showFloatingScore(text, color);
+
+            // Tandai jawaban benar / salah
+            const btns = Array.from(document.getElementById('optionsGrid').children);
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                b.classList.remove('!border-amber-400');
+                if (i === m.correctIdx) b.classList.add('!border-emerald-400', '!bg-emerald-600/30');
+                else if (i === m.picked) b.classList.add('!border-red-500', '!bg-red-600/30');
+            });
+
+            updateHUD();
+
+            if (m.winner) {
+                matchOver = true;
+                const myTeam = online.role === 'host' ? 1 : 2;
+                const iWon = m.winner === myTeam;
+                setTimeout(() => {
+                    if (!isOnline()) return;
+                    playSound(iWon ? 'win' : 'wrong');
+                    if (iWon) {
+                        showWinModal("🎉 KAMU MENANG!", "Mantap! Kamu berhasil menarik tali ke sisimu!");
+                    } else {
+                        showWinModal("😵 KAMU KALAH", "Lawan menarik tali ke garis finish. Coba lagi yuk!");
+                    }
+                }, 1100);
+            }
+        }
+
+        // =====================================================
+        //  LOADING, MODAL, LOGOUT
+        // =====================================================
         function runLoadingSequence() {
             const progressBar = document.getElementById('loadingProgress');
             const percentText = document.getElementById('loadingPercentText');
@@ -1016,22 +1472,36 @@
         };
 
         window.openModal = function(id) {
-            document.getElementById(id)?.classList.remove('hidden');
+            const el = document.getElementById(id);
+            if (el) el.classList.remove('hidden');
         };
         window.closeModal = function(id) {
-            document.getElementById(id)?.classList.add('hidden');
+            const el = document.getElementById(id);
+            if (el) el.classList.add('hidden');
         };
 
         window.confirmExitGame = function() {
             window.openModal('modalConfirmExit');
         };
+
         window.playAgain = function() {
+            if (isOnline() && online.conn) {
+                if (online.role === 'host') {
+                    hostStartMatch();
+                } else {
+                    sendMsg({ t: 'again' });
+                    toast('Meminta host untuk mulai lagi...');
+                }
+                return;
+            }
             window.closeModal('modalWin');
             initGameplayUI();
         };
+
         window.executeLogout = function() {
             window.closeModal('modalConfirmExit');
             stopTimer();
+            cleanupOnline();
             // Coba tutup tab; kalau browser menolak, arahkan ke halaman kosong
             window.close();
             setTimeout(() => { window.location.replace('about:blank'); }, 300);
